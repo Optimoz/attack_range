@@ -7,6 +7,9 @@ ansible/roles/*/files/splunk*.msi
 ansible/vars/vars.yml
 *.idea
 
+# conf folder
+conf/*
+
 # apps folder
 apps/*
 !apps/.gitkeep
