@@ -17,7 +17,7 @@ if [[ ${OPERATIONS} =~ (^|[[:space:]])${OPERATION}($|[[:space:]]) ]]
 then
   [[ ${EXISTS} -eq 0 ]] && echo "Attack Range ${ATTACK_RANGE_NAME} doesn't exist!" && exit 1
 else
-  [[ ${OPERATION} = "build" ]] && [[ ${EXISTS} -eq 1 ]] && \
+  [[ ${OPERATION} = "build1" ]] && [[ ${EXISTS} -eq 1 ]] && \
   echo "Attack Range ${ATTACK_RANGE_NAME} already exists!" && exit 1
 fi
 
@@ -26,6 +26,7 @@ case "${OPERATION}" in
 "build") 
   echo "Building : ${ATTACK_RANGE_NAME}"
 
+  [[ ${AWS_REGION} = "" ]] && AWS_REGION="us-east-1"
   [[ ${ATTACK_RANGE_NAME} = "" ]] && ATTACK_RANGE_NAME="esi"
   [[ ${ATTACK_RANGE_PASSWORD} = "" ]] && ATTACK_RANGE_PASSWORD="Electr0Cyb3r"
   [[ ${EC2_KEY_NAME} = "" ]] && EC2_KEY_NAME="attack-range"
@@ -35,6 +36,7 @@ case "${OPERATION}" in
   [[ ${WINDOWS_SERVER} = "Yes" ]] && WINDOWS_SERVER="1" || WINDOWS_SERVER="0"
   [[ ${KALI_MACHINE} = "Yes" ]] && KALI_MACHINE="1" || KALI_MACHINE="0"
   [[ ${WINDOWS_CLIENT} = "Yes" ]] && WINDOWS_CLIENT="1" || WINDOWS_CLIENT="0"
+  [[ ${WINDOWS_CLIENT_AMI} = "" ]] && WINDOWS_CLIENT_AMI="import-ami-0bfa8347c6efcf8f2"
   [[ ${ZEEK_SENSOR} = "Yes" ]] && ZEEK_SENSOR="1" || ZEEK_SENSOR="0"
 
   mkdir -p conf
@@ -51,7 +53,7 @@ case "${OPERATION}" in
   then
     for conf in conf/*.conf
     do
-      echo "nChecking status on ${conf}"
+      echo "Checking status on ${conf}"
       python attack_range.py -c ${conf} show
     done
   else
@@ -79,11 +81,9 @@ case "${OPERATION}" in
   ;;
 
 "simulate") 
-  if [ ${SIMMULATE} = "Yes" ]
-  then
-    echo "Simulating ${ATTACK_RANGE_NAME}"
-    python attack_range.py -c conf/${ATTACK_RANGE_NAME} simulate -st T1003.002 -t ar-win-dc-esi-attack-range
-  fi
+  echo "Simulating using ${ATTACK_RANGE_NAME}"
+  python attack_range.py -c conf/${ATTACK_RANGE_NAME}-attack_range.conf simulate \
+  -st ${SIMULATION_TECHNIQUES} -t ${ATTACK_TARGET}
   ;;
 
 esac

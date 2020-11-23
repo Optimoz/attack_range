@@ -35,7 +35,7 @@ private_key_path = ~/.ssh/attack-range.pem
 # Specify the path to your private SSH key
 # required for both AWS and Azure
 
-region = us-east-1
+region = ${AWS_REGION}
 #region = us-west-2
 # Specify the region in which you want to build the attack range
 # for aws cloud: please ensure that aws_cli has the same region specified
@@ -311,7 +311,7 @@ windows_client_private_ip = 10.0.1.17
 # specify the windows client private ip
 # should be in subnet: 10.0.1.0/24
 
-windows_client_os = import-ami-0e5a092cc20dbb992
+windows_client_os = ${WINDOWS_CLIENT_AMI}
 # specify the windows server operating System
 # specify the ami name
 # instructions to upload your own Windows 10 ami: https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS
