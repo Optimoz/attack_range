@@ -8,6 +8,7 @@
 cd /apps/attack_range
 . ./venv/bin/activate
 
+AR_STATUS=1
 OPERATION=${1}
 OPERATIONS="stop start destroy simulate"
 
@@ -29,7 +30,8 @@ case "${OPERATION}" in
   [[ ${AWS_REGION} = "" ]] && AWS_REGION="us-east-1"
   [[ ${ATTACK_RANGE_NAME} = "" ]] && ATTACK_RANGE_NAME="esi"
   [[ ${ATTACK_RANGE_PASSWORD} = "" ]] && ATTACK_RANGE_PASSWORD="Electr0Cyb3r"
-  [[ ${EC2_KEY_NAME} = "" ]] && EC2_KEY_NAME="attack-range"
+  [[ ${EC2_KEY_NAME} = "" ]] && EC2_KEY_NAME="esiar"
+  [[ ${IP_WHITELIST} = "" ]] && IP_WHITELIST="0.0.0.0/0"
   [[ ${EC2_INSTANCE_TYPE} = "" ]] && EC2_INSTANCE_TYPE="t3.large"
   [[ ${PHANTOM_SERVER} = "Yes" ]] && PHANTOM_SERVER="1" || PHANTOM_SERVER="0"
   [[ ${PHANTOM_COMMUNITY_USERNAME} = "" ]] && PHANTOM_COMMUNITY_USERNAME="user" 
@@ -46,6 +48,7 @@ case "${OPERATION}" in
   eval "echo \"${conf_template}\"" > conf/${ATTACK_RANGE_NAME}-attack_range.conf
 
   python attack_range.py -c conf/${ATTACK_RANGE_NAME}-attack_range.conf build
+  AR_STATUS=$?
   ;;
 
 "status") 
@@ -57,6 +60,7 @@ case "${OPERATION}" in
     do
       echo "Checking status on ${conf}"
       python attack_range.py -c ${conf} show
+      AR_STATUS=$?
     done
   else
     echo "There is no active Attack Range in place."
@@ -66,11 +70,13 @@ case "${OPERATION}" in
 "stop") 
   echo "Stopping ${ATTACK_RANGE_NAME}"
   python attack_range.py -c conf/${ATTACK_RANGE_NAME}-attack_range.conf stop
+  AR_STATUS=$?
   ;;
 
 "start") 
   echo "Resuming ${ATTACK_RANGE_NAME}"
   python attack_range.py -c conf/${ATTACK_RANGE_NAME}-attack_range.conf resume
+  AR_STATUS=$?
   ;;
 
 "destroy") 
@@ -78,6 +84,7 @@ case "${OPERATION}" in
   then
     echo "Destroying ${ATTACK_RANGE_NAME}"
     python attack_range.py -c conf/${ATTACK_RANGE_NAME}-attack_range.conf destroy
+    AR_STATUS=$?
     rm conf/${ATTACK_RANGE_NAME}-attack_range.conf
   fi
   ;;
@@ -86,6 +93,9 @@ case "${OPERATION}" in
   echo "Simulating using ${ATTACK_RANGE_NAME}"
   python attack_range.py -c conf/${ATTACK_RANGE_NAME}-attack_range.conf simulate \
   -st ${SIMULATION_TECHNIQUES} -t ${ATTACK_TARGET}
+  AR_STATUS=$?
   ;;
 
 esac
+
+exit ${AR_STATUS}

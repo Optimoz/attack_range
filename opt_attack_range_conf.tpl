@@ -26,7 +26,7 @@ key_name = ${EC2_KEY_NAME}
 # please configure your ssh key name on aws
 # for instructions visit: https://github.com/splunk/attack_range/wiki/Ubuntu-18.04-Installation
 
-ip_whitelist = 0.0.0.0/0
+ip_whitelist = ${IP_WHITELIST}
 # Blocks from which Attack Range machines can be reached.
 # This allow comma-separated blocks
 # ip_whitelist = 0.0.0.0/0,35.153.82.195/32
