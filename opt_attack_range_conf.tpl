@@ -144,12 +144,12 @@ splunk_bots_dataset = 0
 #
 
 [phantom_settings]
-phantom_community_username = user
+phantom_community_username = ${PHANTOM_COMMUNITY_USERNAME}
 # Specify the username needed to login to my.phantom.us to download Phantom
 # This must be changed to a real username
 # You can register under my.phantom.us
 
-phantom_community_password = password
+phantom_community_password = ${PHANTOM_COMMUNITY_PASSWORD}
 # Specify the password used to login to my.phantom.us to download Phantom
 # This must be changed to a real password
 # You can register under my.phantom.us
